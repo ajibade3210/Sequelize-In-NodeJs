@@ -33,7 +33,6 @@ Sync(options)
 - Checks the current state of database (colums it has , their data types etc.)
 - Performs neccessary changes in the table to make it match the model.
 
-
 #### Sequelize automatically puralize our model name to create a Table name using a library call reflection. (use option freezeTableName to remove this default setting)
 
 #### Sequelize Model --->> Table Database
@@ -193,7 +192,6 @@ Model Wide Validation.
 
 This are validation insert as an option for after creating the model.
 
-
 ### Injection and Raw Queries:
 
 RAW QUERIES
@@ -209,3 +207,66 @@ Sql Injection allows an attacker to get data, they shouldnt be able to retrieve,
 
 You can prevent Sql injection with sequelize by using bind parameters and replacements.
 
+### Associations In Sql.
+
+These are Relaionship between tables in a database.
+
+These relationship are extablished with foreign keys.
+
+The primary key from parent table appears in foreign key column on child table.
+
+Child table: Table with the foreign key is known as the CHild Table. (cant survive on it own)
+
+Parent Table: This is the table referenced by the child. It is Table whose primary key (id) is being referenced by the child table.
+
+There are 3 types of Associations:
+
+- _One to One_ :- One row on a table can be linked at most with one row in another table eg.Socail Security Number and A person.
+
+In other to decide which table to put the foreign key. First decide which table can exists by itself.
+
+- One to Many.
+- Many to Many.
+
+Sequelize
+To Create a One to One with Sequelize use
+
+- hasOne()
+  .parentTablehasOne(childTable)
+
+-belongTo()
+.childTable.belongTo(parentTable))
+
+```
+sequelize
+  .sync({ alter: true })
+  .then(() => {
+    //updated
+    return Capital.findOne({ where: { capitalName: "Nairobi" } });
+  })
+  .then((data) => {
+    capital = data;
+    return Country.findOne({ where: { countryName: "Kenya" } });
+  })
+  .then((data) => {
+    country = data;
+    country.setCapital(capital);
+  })
+  .catch((err) => {
+    console.error(err);
+  });
+```
+
+#### Many To Many.
+
+Association where a child table (join table ) contains two foreign key columns referencing the primary key column of the two parent tables.
+
+Each foreign key colunm can contain multiple occurrences of each foreign keys
+
+Created with belongsToMany() and belongsMany().
+
+child table() -- Table with foreign key column.
+
+parent table - Table whose primary key is being referenced by the child table.
+
+_belongsToMany_ -- childTable.belongsToMany(parentTable)
